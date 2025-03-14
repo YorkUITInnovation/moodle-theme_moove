@@ -1089,6 +1089,10 @@ table.quizreviewsummary {
   }
 }
 
+.que.essay .qtype_essay_response.readonly {
+  background-color: var(--background-primary);
+}
+
 /*
 =============================================
 QUIZ OVERRIDES END.
