@@ -967,6 +967,11 @@ QUIZ OVERRIDES START
         color: var(--font-secondary) !important;
       }
     }
+
+    .answer > .sortablelist > .sortableitem {
+       background: var(--primary) !important;
+    }
+    
   }
 }
 
