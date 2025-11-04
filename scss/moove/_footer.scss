@@ -1,4 +1,8 @@
 #page-footer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 -15px;
     background-color: #282829;
     color: #fff;
 
@@ -203,6 +207,14 @@
 
     .btn-footer-communication {
         bottom: 4rem;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .pagelayout-standard #page.drawers .footer-popover,
+    body.limitedwidth #page.drawers .footer-popover {
+        max-width: 100%;
+        border-radius: 0;
     }
 }
 
