@@ -54,4 +54,12 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
     ],
+    'theme_moove_launchsavy' => [
+        'classname' => 'theme_moove\api\launch_savy',
+        'classpath' => 'theme_moove/classes/api/launch_savy',
+        'methodname' => 'launch_savy',
+        'description' => 'Launch Savy chatbot.',
+        'type' => 'write',
+        'ajax' => true,
+    ],
 ];

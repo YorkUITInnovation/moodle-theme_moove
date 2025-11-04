@@ -453,4 +453,48 @@ if ($ADMIN->fulltree) {
     $page->add($setting);
 
     $settings->add($page);
+
+    /*
+    * --------------------
+    * Savy settings tab
+    * --------------------
+    */
+    $page = new admin_settingpage('theme_moove_savy', get_string('savysettings', 'theme_moove'));
+
+    // Cria embed URL setting.
+    $name = 'theme_moove/cria_embed_url';
+    $title = get_string('cria_embed_url', 'theme_moove');
+    $description = get_string('cria_embed_url_desc', 'theme_moove');
+    $setting = new admin_setting_configtext($name, $title, $description, '');
+    $page->add($setting);
+
+    // Savy bot id setting.
+    $name = 'theme_moove/savy_bot_id';
+    $title = get_string('savy_bot_id', 'theme_moove');
+    $description = get_string('savy_bot_id_desc', 'theme_moove');
+    $setting = new admin_setting_configtext($name, $title, $description, '');
+    $page->add($setting);
+
+    // Embed api key setting.
+    $name = 'theme_moove/savy_cria_api_key';
+    $title = get_string('savy_cria_api_key', 'theme_moove');
+    $description = get_string('savy_cria_api_key_desc', 'theme_moove');
+    $setting = new admin_setting_configtext($name, $title, $description, '');
+    $page->add($setting);
+
+    // Savy anonymous setting (bool).
+    $name = 'theme_moove/savy_anonymous';
+    $title = get_string('savy_anonymous', 'theme_moove');
+    $description = get_string('savy_anonymous_desc', 'theme_moove');
+    $setting = new admin_setting_configselect($name, $title, $description, 0, array(0 => get_string('no'), 1 => get_string('yes')));
+    $page->add($setting);
+
+    // Savy json encode data (bool).
+    $name = 'theme_moove/savy_json_encode';
+    $title = get_string('savy_json_encode', 'theme_moove');
+    $description = get_string('savy_json_encode_desc', 'theme_moove');
+    $setting = new admin_setting_configselect($name, $title, $description, 0, array(0 => get_string('no'), 1 => get_string('yes')));
+    $page->add($setting);
+
+    $settings->add($page);
 }

@@ -191,11 +191,14 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 {{#pix}}t/messages-o, core{{/pix}}
             </button>
         {{/output.has_communication_links}}
-        <button class="btn btn-icon rounded-circle bg-secondary btn-footer-popover" data-action="footer-popover" aria-label="{{#str}}showfooter, theme_boost{{/str}}">
+        <button class="btn btn-icon rounded-circle bg-secondary btn-footer-popover" data-action="footer-popover" aria-label="{{#str}}showfooter, theme_boost{{/str}}" onclick='window.initsavy()'>
             {{#pix}}e/question, core{{/pix}}
         </button>
     </div>
     <div class="footer-content-popover container" data-region="footer-content-popover">
+        <div class="footer-section p-3 border-bottom">
+            {{{ output.render_savy }}}
+        </div>
         {{# output.has_popover_links }}
             <div class="footer-section p-3 border-bottom">
                 {{# output.page_doc_link }}

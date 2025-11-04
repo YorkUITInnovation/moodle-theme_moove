@@ -413,6 +413,52 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Render the Savy chatbot button and container.
+     *
+     * @return string The rendered HTML for Savy
+     */
+    public function render_savy() {
+        global $OUTPUT, $USER;
+        $savydata = [];
+
+        // Set anonymous for test mode.
+        $savydata['anonymous'] = boolval(get_config('theme_moove', 'savy_anonymous'));
+
+        // Get the language.
+        $currentlanguage = current_language();
+        $isglendon = false;
+        if (isset($USER->profile['facultyaffiliaton'])) {
+            $isglendon = ($USER->profile['facultyaffiliaton'] === 'GL');
+        }
+        $savydata['watson-button-icon'] = $OUTPUT->image_url(
+            $isglendon && ($currentlanguage == 'fr' || $currentlanguage == 'fr_ca') ? 'bigsvaiconfr' : 'bigsvaicon',
+            'theme'
+        );
+
+        // If anon mode is disabled, you must have the sufficient data to form the payload.
+        if (!$savydata['anonymous']) {
+            try {
+                $canrendersavy = \theme_moove\util\savy::can_render_savy();
+            } catch (\Exception $e) {
+                $canrendersavy = false;
+            }
+
+            if (!$canrendersavy) {
+                return "";
+            }
+        }
+
+        // Render savy payload.
+        try {
+            $output = $this->render_from_template('theme_moove/need_savy', $savydata);
+        } catch (\Exception $e) {
+            $output = '';
+        }
+
+        return $output;
+    }
+
+    /**
      * Redirects the user by any means possible given the current state
      *
      * This function should not be called directly, it should always be called using

@@ -186,5 +186,19 @@ $string['privacy:accessibilitystyles_sitecolorclass'] = 'The current preference 
 $string['privacy:thememoovesettings_fonttype'] = 'The current preference for the font type is: {$a}.';
 $string['privacy:thememoovesettings_enableaccessibilitytoolbar'] = 'The current preference for enable accessibility toolbar is to show it.';
 
+// Savy chatbot.
+$string['watson_logo'] = 'Savy chatbot logo';
+$string['savysettings'] = 'Savy Settings';
+$string['cria_embed_url'] = 'Cria Embed URL';
+$string['cria_embed_url_desc'] = 'The URL for the Cria embed service (e.g., https://embed.cria.app)';
+$string['savy_bot_id'] = 'Savy Bot ID';
+$string['savy_bot_id_desc'] = 'The unique identifier for your Savy chatbot';
+$string['savy_cria_api_key'] = 'Cria API Key';
+$string['savy_cria_api_key_desc'] = 'Your API key for accessing the Cria service';
+$string['savy_anonymous'] = 'Anonymous Mode';
+$string['savy_anonymous_desc'] = 'Enable anonymous mode for testing (no user data sent)';
+$string['savy_json_encode'] = 'JSON Encode Payload';
+$string['savy_json_encode_desc'] = 'Enable JSON encoding of the payload data';
+
 $string['redirectmessage'] = 'This page should automatically redirect.';
 $string['redirectbtntext'] = 'If nothing is happening please click here to continue.';
