@@ -1,14 +1,24 @@
 .dashboard-card {
     border: 1px solid $gray-200;
 
+    &.dimmed {
+        color: $text-muted;
+
+        a {
+            color: $text-muted;
+        }
+    }
+
     .dashboard-card-img {
         padding: .5rem;
         position: relative;
         height: 10rem !important;
+        background-position: center;
+        background-size: cover;
 
         .course-category {
-            background-color: $brand-primary-2;
-            color: #ffffff;
+            background-color: $brand-primary;
+            color: #fff;
             padding: 4px 6px;
             margin-bottom: .25rem;
             border-radius: 0.5rem;
@@ -19,37 +29,11 @@
                 color: #fff;
             }
         }
-
-    }
-
-    a:has(.course-category) {
-        text-decoration-color: #ffffff;
     }
 
     .card-body.course-info-container .coursename .text-truncate {
         white-space: initial;
     }
-}
-
-.dashboard-card {
-    box-shadow: none !important;
-    border-radius: 5px !important;
-
-    .dashboard-card-img {
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-
-    }
-
-    div.progress {
-        height: 0.6rem;
-        margin-bottom: 12px;
-    }
-
-    div.card-footer {
-        background-color: inherit !important;
-    }
-
 }
 
 .block .block-cards .moove-card-footer {
@@ -108,54 +92,4 @@
         width: calc(100%);
         margin: 1rem 0;
     }
-}
-
-.path-mod .activity-header:not(:empty) {
-    background-color: transparent !important;
-}
-
-
-.divider > button.section-modchooser > i.fa-plus::before {
-    margin-left: 2px;
-}
-
-.popover:has(.popover-body > #moove-licenselinks) {
-    background-color: $background-primary;
-    height: 70%;
-
-    .arrow::after {
-        border-left-color: $background-primary;
-    }
-    .popover-body {
-        height: 100%;
-        color: $font-primary;
-        overflow: scroll;
-    }
-
-}
-
-@media(max-width: 568px) {
-    .maincalendar div.header {
-        justify-content: center;
-    }
-
-    select.cal_courses_flt {
-        margin-right: 0 !important;
-        width: 75%;
-    }
-
-    button.btn[data-action='new-event-button'] {
-        width: 75%;
-        margin-top: 15px;
-        margin-bottom: 15px;
-    }
-
-    h6.event-action {
-        padding-left: 0 !important;
-        margin-top: 0.6rem;
-    }
-}
-
-.list-group > .list-group-item {
-    padding-bottom: 1rem !important;
 }

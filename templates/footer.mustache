@@ -1,18 +1,18 @@
 {{!
-    This file is part of Moodle - http://moodle.org/
+This file is part of Moodle - http://moodle.org/
 
-    Moodle is free softpware: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
     @template theme_moove/footer
@@ -31,66 +31,154 @@
         }
     }
 }}
-<style>
-    .wp-block-social-links .wp-social-link.wp-social-link.wp-social-link {
-        margin: 4px 8px 4px 0;
-    }
 
-    .wp-block-social-links.aligncenter {
-        justify-content: center;
-        display: flex;
-    }
+<footer id="page-footer" class="footer-popover">
+    <div class="moove-container-fluid footer-columns">
+        <div class="row">
+            <div class="col-md-4 column-left">
+                {{#hasfootercontact}}
+                    <div class="contact">
+                        <h3 class="footer-title">{{#str}}contactus, theme_moove{{/str}}</h3>
 
-    .mb-2, .my-2 {
-        margin-bottom: 0.5rem !important;
-    }
+                        <ul>
+                            {{#website}}
+                                <li>
+                                    <a href="{{{website}}}" target="_blank" class="website btn btn-link">
+                                        <i class="fa fa-globe"></i>
+                                    </a>
+                                </li>
+                            {{/website}}
+                            {{#mobile}}
+                                <li>
+                                    <a href="tel:{{{mobile}}}" target="_blank" class="mobile btn btn-link">
+                                        <i class="fa fa-phone"></i>
+                                    </a>
+                                </li>
+                            {{/mobile}}
+                            {{#mail}}
+                                <li>
+                                    <a href="mailto:{{{mail}}}" target="_blank" class="mail btn btn-link">
+                                        <i class="fa fa-envelope"></i>
+                                    </a>
+                                </li>
+                            {{/mail}}
+                        </ul>
+                    </div>
+                {{/hasfootercontact}}
 
-    .mt-2, .my-2 {
-        margin-top: 0.5rem !important;
-    }
+                {{#hasfootersocial}}
+                    <div class="socialnetworks">
+                        <h3 class="footer-title">{{#str}}followus, theme_moove{{/str}}</h3>
 
-    .aligncenter {
-    }
+                        <ul class="mb-0">
+                            {{#tiktok}}
+                                <li>
+                                    <a href="{{{tiktok}}}" target="_blank" class="tiktok btn btn-link btn-rounded">
+                                        <i class="fab fa-tiktok"></i>
+                                    </a>
+                                </li>
+                            {{/tiktok}}
 
-    .aligncenter {
-        clear: both;
-    }
+                            {{#facebook}}
+                                <li>
+                                    <a href="{{{facebook}}}" target="_blank" class="facebook btn btn-link btn-rounded">
+                                        <i class="fa fa-facebook"></i>
+                                    </a>
+                                </li>
+                            {{/facebook}}
 
-    .wp-block-social-links, .wp-block-social-links.has-normal-icon-size {
-        font-size: 24px;
-    }
+                            {{#twitter}}
+                                <li>
+                                    <a href="{{{twitter}}}" target="_blank" class="twitter btn btn-link btn-rounded">
+                                        <i class="fa fa-twitter"></i>
+                                    </a>
+                                </li>
+                            {{/twitter}}
 
-    .wp-block-social-links {
-        display: flex;
-        flex-wrap: wrap;
-        padding-left: 0;
-        padding-right: 0;
-        text-indent: 0;
-        margin-left: 0;
-    }
+                            {{#instagram}}
+                                <li>
+                                    <a href="{{{instagram}}}" target="_blank" class="instagram btn btn-link btn-rounded">
+                                        <i class="fa fa-instagram"></i>
+                                    </a>
+                                </li>
+                            {{/instagram}}
 
-    .wp-block-social-link {
-        display: block;
-        border-radius: 9999px;
-        transition: transform .1s ease;
-        height: auto;
-    }
+                            {{#linkedin}}
+                                <li>
+                                    <a href="{{{linkedin}}}" target="_blank" class="linkedin btn btn-link btn-rounded">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                </li>
+                            {{/linkedin}}
 
-    *, ::before, ::after {
-        box-sizing: border-box;
-    }
+                            {{#pinterest}}
+                                <li>
+                                    <a href="{{{pinterest}}}" target="_blank" class="pinterest btn btn-link btn-rounded">
+                                        <i class="fa fa-pinterest"></i>
+                                    </a>
+                                </li>
+                            {{/pinterest}}
 
-    .wp-block-social-links, .wp-block-social-links.has-normal-icon-size {
-        font-size: 24px;
-    }
+                            {{#youtube}}
+                                <li>
+                                    <a href="{{{youtube}}}" target="_blank" class="youtube btn btn-link btn-rounded">
+                                        <i class="fa fa-youtube"></i>
+                                    </a>
+                                </li>
+                            {{/youtube}}
 
-    .wp-block-social-links {
-        text-indent: 0;
-    }
+                            {{#whatsapp}}
+                                <li>
+                                    <a href="https://api.whatsapp.com/send?phone={{{whatsapp}}}" target="_blank" class="whatsapp btn btn-link btn-rounded">
+                                    <i class="fa fa-whatsapp"></i>
+                                    </a>
+                                </li>
+                            {{/whatsapp}}
 
-</style>
-<footer id="page-footer">
-    {{{ output.standard_footer_html }}}
+                            {{#telegram}}
+                                <li>
+                                    <a href="{{{telegram}}}" target="_blank" class="telegram btn btn-link btn-rounded">
+                                        <i class="fa fa-telegram"></i>
+                                    </a>
+                                </li>
+                            {{/telegram}}
+                        </ul>
+                    </div>
+                {{/hasfootersocial}}
+            </div>
+            <div class="col-md-4 column-center">
+
+                {{{ output.login_info }}}
+
+                {{{ output.standard_footer_html }}}
+
+                <div class="tool_usertours-resettourcontainer"></div>
+            </div>
+            <div class="col-md-4 column-right">
+                {{#enablemobilewebservice}}
+                    {{#mobilesetuplink}}
+                        <a href="{{{mobilesetuplink}}}">{{#str}}getmoodleonyourmobile, tool_mobile{{/str}}</a>
+                    {{/mobilesetuplink}}
+                    {{^mobilesetuplink}}
+                        <h3 class="footer-title">{{#str}}getmoodleonyourmobile, tool_mobile{{/str}}</h3>
+                    {{/mobilesetuplink}}
+                    <div class="stores">
+                        {{#androidappid}}
+                            <a href="https://play.google.com/store/apps/details?id={{androidappid}}">
+                            <img src="{{config.wwwroot}}/theme/moove/pix/store_google.svg" alt="Play Store">
+                            </a>
+                        {{/androidappid}}
+                        {{#iosappid}}
+                            <a class="mt-1" href="https://apps.apple.com/app/id{{iosappid}}">
+                                <img src="{{config.wwwroot}}/theme/moove/pix/store_apple.svg" alt="App Store">
+                            </a>
+                        {{/iosappid}}
+                    </div>
+                {{/enablemobilewebservice}}
+            </div>
+        </div>
+    </div>
+
     <div class="footer-content-debugging footer-dark bg-dark text-light">
         <div class="moove-container-fluid footer-dark-inner">
             {{{ output.debug_footer_html }}}
@@ -98,40 +186,27 @@
     </div>
 
     <div data-region="footer-container-popover">
-        <button class="btn btn-icon bg-secondary icon-no-margin btn-footer-popover" data-action="footer-popover"
-                aria-label="{{#str}}showfooter, theme_boost{{/str}}" onclick='window.initsavy()'>
+        {{#output.has_communication_links}}
+            <button onclick="window.open('{{output.communication_url}}', '_blank', 'noreferrer')" class="btn btn-icon rounded-circle bg-primary text-white btn-footer-communication" aria-label="{{#str}}communicationroomlink, course{{/str}}">
+                {{#pix}}t/messages-o, core{{/pix}}
+            </button>
+        {{/output.has_communication_links}}
+        <button class="btn btn-icon rounded-circle bg-secondary btn-footer-popover" data-action="footer-popover" aria-label="{{#str}}showfooter, theme_boost{{/str}}">
             {{#pix}}e/question, core{{/pix}}
         </button>
     </div>
     <div class="footer-content-popover container" data-region="footer-content-popover">
-        <div class="footer-section p-3 border-bottom">
-            {{{output.render_savy}}}
-        </div>
         {{# output.has_popover_links }}
             <div class="footer-section p-3 border-bottom">
-                <a href="https://lthelp.yorku.ca/moodle"
-                   class="btn btn-york-red w-100"
-                   target="_blank"
-                    title="{{#str}}moodledocslink, core{{/str}}"
-                >
-                    {{#str}}moodledocslink, core{{/str}}
-                </a>
-                <!-- {{# output.page_doc_link }}
+                {{# output.page_doc_link }}
                     <div>{{{ output.page_doc_link }}}</div>
                 {{/ output.page_doc_link }}
 
                 {{# output.services_support_link }}
                     <div>{{{ output.services_support_link }}}</div>
-                {{/ output.services_support_link }} -->
+                {{/ output.services_support_link }}
             </div>
         {{/ output.has_popover_links }}
-        {{#output.get_user_tours}}
-            <div class="footer-section p-3 border-bottom">
-                <a id="resetpagetour" class="btn btn-york-red w-100">
-                    {{#str}}reset_user_tour, theme_moove{{/str}}
-                </a>
-            </div>
-        {{/output.get_user_tours}}
         <div class="footer-section p-3">
             <div>{{#str}}poweredbymoodle, core{{/str}}</div>
             {{#output.moodle_release}}
@@ -139,6 +214,15 @@
                     {{#str}}version, core{{/str}} {{{ output.moodle_release }}}
                 </div>
             {{/output.moodle_release}}
+        </div>
+    </div>
+
+    <div class="copyright">
+        <div class="madeby">
+            <p>{{#str}}themedevelopedby, theme_moove{{/str}}</p>
+            <a href="https://conecti.me">
+                <img src="{{config.wwwroot}}/theme/moove/pix/logo_conectime.svg" alt="Conecti.me" style="height: 20px;">
+            </a>
         </div>
     </div>
 </footer>

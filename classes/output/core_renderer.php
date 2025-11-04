@@ -24,16 +24,11 @@
 
 namespace theme_moove\output;
 
-use cache;
-use context_course;
-use Exception;
-use html_writer;
-use moodle_url;
 use theme_config;
+use core\context\course as context_course;
+use moodle_url;
+use html_writer;
 use theme_moove\output\core_course\activity_navigation;
-use theme_moove\util\savy;
-use tool_usertours\tour as tourinstance;
-
 
 /**
  * Renderers to align Moodle's HTML with that expected by Bootstrap
@@ -42,63 +37,7 @@ use tool_usertours\tour as tourinstance;
  * @copyright  2022 Willian Mano {@link https://conecti.me}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class core_renderer extends \theme_boost\output\core_renderer
-{
-
-    public function get_cache_num()
-    {
-        $cache = cache::make('theme_moove', 'theme_mode');
-        $cachenum = $cache->get('cachenum');
-
-        if (!$cachenum) {
-            $cachenum = rand();
-            $cache->set('cachenum', $cachenum);
-            return $cachenum;
-        }
-
-        return $cachenum;
-    }
-
-    public function get_mode_stylesheet($dark_enabled)
-    {
-        $mode = $dark_enabled ? 'dark' : 'light';
-        $cachenum = $this->get_cache_num();
-
-        return "/theme/moove/layout/theme_css.php?mode=$mode&cache=$cachenum";
-    }
-
-    public function get_dark_enabled()
-    {
-        global $DB, $USER;
-
-        $dark_enabled = false;
-
-        if ($record = $DB->get_record('theme_moove', ['userid' => $USER->id], '*')) {
-            $dark_enabled = $record->dark_enabled;
-        }
-
-        return $dark_enabled;
-    }
-
-    public function theme_mode_inject_script($dark_enabled)
-    {
-
-        $mode = $dark_enabled ? 'dark' : 'light';
-
-        return ("
-           <script id='set-body-tag'>
-           
-                function addBodyTag() {
-                    let body = document.querySelector('body');
-                    body.setAttribute('theme-mode', '$mode')
-                }
-           
-                document.getElementById('set-body-tag').remove();
-           </script>
-        
-        ");
-    }
-
+class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * The standard tags (meta tags, links to stylesheets and JavaScript, etc.)
      * that should be included in the <head> tag. Designed to be called in theme
@@ -106,54 +45,37 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return string HTML fragment.
      */
-    public function standard_head_html()
-    {
-
-
-        // Load standard
+    public function standard_head_html() {
         $output = parent::standard_head_html();
 
-        /*
-         * This commented line was left in to note what NOT to do.
-         * Removing the /all/ base stylesheet will break certain things (file picker, color picker, etc.).
-         * Leave the stylesheet in there as a FALLBACK in case our inline one is missing some stuff
-         * (It seems it is due to SCSS being added to the /all/ file somewhere in the moodle core out of our control)
-         *
-         *
-         */
-        //$output = preg_replace('/http(s)*:\/\/.*\/moove\/.*\/all/', '', $output);
+        $googleanalyticscode = "<script
+                                    async
+                                    src='https://www.googletagmanager.com/gtag/js?id=GOOGLE-ANALYTICS-CODE'>
+                                </script>
+                                <script>
+                                    window.dataLayer = window.dataLayer || [];
+                                    function gtag() {
+                                        dataLayer.push(arguments);
+                                    }
+                                    gtag('js', new Date());
+                                    gtag('config', 'GOOGLE-ANALYTICS-CODE');
+                                </script>";
 
-        $theme = theme_config::load("moove");
-        $dark_enabled = $this->get_dark_enabled();
-        $output .= $this->theme_mode_inject_script($dark_enabled);
-        $output .= '<link rel="stylesheet" type="text/css" href="' . $this->get_mode_stylesheet($dark_enabled) . '">';
-
-        $google_analytics_code = (
-        "<script
-                async
-                src='https://www.googletagmanager.com/gtag/js?id=GOOGLE-ANALYTICS-CODE'>
-            </script>
-            <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag() {
-                    dataLayer.push(arguments);
-                }
-                gtag('js', new Date());
-                gtag('config', 'GOOGLE-ANALYTICS-CODE');
-            </script>"
-        );
+        $theme = theme_config::load('moove');
 
         if (!empty($theme->settings->googleanalytics)) {
-            $output .= str_replace("GOOGLE-ANALYTICS-CODE", trim($theme->settings->googleanalytics), $google_analytics_code);
+            $output .= str_replace("GOOGLE-ANALYTICS-CODE", trim($theme->settings->googleanalytics), $googleanalyticscode);
         }
 
-        $sitefont = isset($theme->settings->fontsite) ? $theme->settings->fontsite : 'Roboto';
+        $sitefont = isset($theme->settings->fontsite) ? $theme->settings->fontsite : 'Moodle';
 
-        $output .= ('
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=')
-            . $sitefont . ':ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">';
+        if ($sitefont != 'Moodle') {
+            $output .= '<link rel="preconnect" href="https://fonts.googleapis.com">
+                       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                       <link href="https://fonts.googleapis.com/css2?family='
+                . $sitefont .
+                ':ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">';
+        }
 
         return $output;
     }
@@ -169,8 +91,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @since Moodle 2.5.1 2.6
      */
-    public function body_attributes($additionalclasses = array())
-    {
+    public function body_attributes($additionalclasses = []) {
         $hasaccessibilitybar = get_user_preferences('thememoovesettings_enableaccessibilitytoolbar', '');
         if ($hasaccessibilitybar) {
             $additionalclasses[] = 'hasaccessibilitybar';
@@ -195,7 +116,7 @@ class core_renderer extends \theme_boost\output\core_renderer
             $additionalclasses = explode(' ', $additionalclasses);
         }
 
-        return ' id="' . $this->body_id() . '" class="' . $this->body_css_classes($additionalclasses) . '"';
+        return ' id="'. $this->body_id().'" class="'.$this->body_css_classes($additionalclasses).'"';
     }
 
     /**
@@ -203,8 +124,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return bool
      */
-    public function should_display_logo()
-    {
+    public function should_display_logo() {
         if ($this->should_display_theme_logo() || parent::should_display_navbar_logo()) {
             return true;
         }
@@ -217,8 +137,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return bool
      */
-    public function should_display_theme_logo()
-    {
+    public function should_display_theme_logo() {
         $logo = $this->get_theme_logo_url();
 
         return !empty($logo);
@@ -229,8 +148,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return string
      */
-    public function get_logo()
-    {
+    public function get_logo() {
         $logo = $this->get_theme_logo_url();
 
         if ($logo) {
@@ -251,8 +169,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return string
      */
-    public function get_theme_logo_url()
-    {
+    public function get_theme_logo_url() {
         $theme = theme_config::load('moove');
 
         return $theme->setting_file_url('logo', 'logo');
@@ -264,8 +181,7 @@ class core_renderer extends \theme_boost\output\core_renderer
      * @param \core_auth\output\login $form The renderable.
      * @return string
      */
-    public function render_login(\core_auth\output\login $form)
-    {
+    public function render_login(\core_auth\output\login $form) {
         global $SITE, $CFG;
 
         $context = $form->export_for_template($this);
@@ -281,7 +197,7 @@ class core_renderer extends \theme_boost\output\core_renderer
         }
 
         $context->hastwocolumns = false;
-        if ($context->hasidentityproviders || $CFG->auth_instructions) {
+        if ($CFG->auth_instructions) {
             $context->hastwocolumns = true;
         }
 
@@ -289,7 +205,7 @@ class core_renderer extends \theme_boost\output\core_renderer
             foreach ($context->identityproviders as $key => $provider) {
                 $isfacebook = false;
 
-                if (strpos($provider['iconurl'], 'facebook') !== false) {
+                if (!empty($provider['iconurl']) && strpos($provider['iconurl'], 'facebook') !== false) {
                     $isfacebook = true;
                 }
 
@@ -304,38 +220,51 @@ class core_renderer extends \theme_boost\output\core_renderer
      * Returns the HTML for the site support email link
      *
      * @param array $customattribs Array of custom attributes for the support email anchor tag.
+     * @param bool $embed Set to true if you want to embed the link in other inline content.
      * @return string The html code for the support email link.
      */
-    public function supportemail(array $customattribs = []): string
-    {
+    public function supportemail(array $customattribs = [], bool $embed = false): string {
         global $CFG;
+
+        // Do not provide a link to contact site support if it is unavailable to this user. This would be where the site has
+        // disabled support, or limited it to authenticated users and the current user is a guest or not logged in.
+        if (!isset($CFG->supportavailability) ||
+            $CFG->supportavailability == CONTACT_SUPPORT_DISABLED ||
+            ($CFG->supportavailability == CONTACT_SUPPORT_AUTHENTICATED && (!isloggedin() || isguestuser()))) {
+            return '';
+        }
 
         $label = get_string('contactsitesupport', 'admin');
         $icon = $this->pix_icon('t/life-ring', '', 'moodle', ['class' => 'iconhelp icon-pre']);
         $content = $icon . $label;
 
+        if ($embed) {
+            $content = $label;
+        }
+
         if (!empty($CFG->supportpage)) {
             $attributes = ['href' => $CFG->supportpage, 'target' => 'blank', 'class' => 'btn contactsitesupport btn-outline-info'];
+
+            $content .= $this->pix_icon('i/externallink', '', 'moodle', ['class' => 'ml-1']);
         } else {
             $attributes = [
                 'href' => $CFG->wwwroot . '/user/contactsitesupport.php',
-                'class' => 'btn contactsitesupport btn-outline-info'
+                'class' => 'btn contactsitesupport btn-outline-info',
             ];
         }
 
         $attributes += $customattribs;
 
-        return \html_writer::tag('a', $content, $attributes);
+        return html_writer::tag('a', $content, $attributes);
     }
 
     /**
      * Returns the moodle_url for the favicon.
      *
-     * @return moodle_url The moodle_url for the favicon
      * @since Moodle 2.5.1 2.6
+     * @return moodle_url The moodle_url for the favicon
      */
-    public function favicon()
-    {
+    public function favicon() {
         global $CFG;
 
         $theme = theme_config::load('moove');
@@ -353,79 +282,11 @@ class core_renderer extends \theme_boost\output\core_renderer
     }
 
     /**
-     * Renders the header bar.
-     *
-     * @param \context_header $contextheader Header bar object.
-     * @return string HTML for the header bar.
-     */
-    protected function render_context_header(\context_header $contextheader)
-    {
-        if ($this->page->pagelayout == 'mypublic') {
-            return '';
-        }
-
-        // Generate the heading first and before everything else as we might have to do an early return.
-        if (!isset($contextheader->heading)) {
-            $heading = $this->heading($this->page->heading, $contextheader->headinglevel, 'h2');
-        } else {
-            $heading = $this->heading($contextheader->heading, $contextheader->headinglevel, 'h2');
-        }
-
-        // All the html stuff goes here.
-        $html = html_writer::start_div('page-context-header');
-
-        // Image data.
-        if (isset($contextheader->imagedata)) {
-            // Header specific image.
-            $html .= html_writer::div($contextheader->imagedata, 'page-header-image mr-4');
-        }
-
-        // Headings.
-        if (isset($contextheader->prefix)) {
-            $prefix = html_writer::div($contextheader->prefix, 'text-muted text-uppercase small line-height-3');
-            $heading = $prefix . $heading;
-        }
-        $html .= html_writer::tag('div', $heading, array('class' => 'page-header-headings'));
-
-        // Buttons.
-        if (isset($contextheader->additionalbuttons)) {
-            $html .= html_writer::start_div('btn-group header-button-group');
-            foreach ($contextheader->additionalbuttons as $button) {
-                if (!isset($button->page)) {
-                    // Include js for messaging.
-                    if ($button['buttontype'] === 'togglecontact') {
-                        \core_message\helper::togglecontact_requirejs();
-                    }
-                    if ($button['buttontype'] === 'message') {
-                        \core_message\helper::messageuser_requirejs();
-                    }
-                    $image = $this->pix_icon($button['formattedimage'], $button['title'], 'moodle', array(
-                        'class' => 'iconsmall',
-                        'role' => 'presentation'
-                    ));
-                    $image .= html_writer::span($button['title'], 'header-button-title');
-                } else {
-                    $image = html_writer::empty_tag('img', array(
-                        'src' => $button['formattedimage'],
-                        'role' => 'presentation'
-                    ));
-                }
-                $html .= html_writer::link($button['url'], html_writer::tag('span', $image), $button['linkattributes']);
-            }
-            $html .= html_writer::end_div();
-        }
-        $html .= html_writer::end_div();
-
-        return $html;
-    }
-
-    /**
      * Returns standard navigation between activities in a course.
      *
      * @return string the navigation HTML.
      */
-    public function activity_navigation()
-    {
+    public function activity_navigation() {
         // First we should check if we want to add navigation.
         $context = $this->page->context;
         if (($this->page->pagelayout !== 'incourse' && $this->page->pagelayout !== 'frametop')
@@ -465,7 +326,7 @@ class core_renderer extends \theme_boost\output\core_renderer
                 $modname .= ' ' . get_string('hiddenwithbrackets');
             }
             // Module URL.
-            $linkurl = new moodle_url($module->url, array('forceview' => 1));
+            $linkurl = new moodle_url($module->url, ['forceview' => 1]);
             // Add module URL (as key) and name (as value) to the activity list array.
             $activitylist[$linkurl->out(false)] = $modname;
         }
@@ -506,9 +367,8 @@ class core_renderer extends \theme_boost\output\core_renderer
      *
      * @return string Final html code.
      */
-    public function get_navbar_callbacks_data()
-    {
-        $callbacks = get_plugins_with_function('moove_additional_header', 'lib.php');
+    public function get_navbar_callbacks_data() {
+        $callbacks = get_plugins_with_function('moove_additional_header', 'lib.php', true, true);
 
         if (!$callbacks) {
             return '';
@@ -527,281 +387,104 @@ class core_renderer extends \theme_boost\output\core_renderer
         return $output;
     }
 
-    public function render_savy()
-    {
-        global $OUTPUT, $USER;
-        $savy_data = [];
+    /**
+     * Returns plugins callback renderable data to be printed on navbar.
+     *
+     * @return string Final html code.
+     */
+    public function get_module_footer_callbacks_data() {
+        $callbacks = get_plugins_with_function('moove_module_footer', 'lib.php', true, true);
 
-        // Set anonymous for test mode
-        $savy_data['anonymous'] = boolval(get_config('theme_moove', 'savy_anonymous'));
-
-        // Get the language
-        $current_language = current_language();
-        $is_glendon = ($USER->profile['facultyaffiliaton'] === 'GL');
-        $savy_data['watson-button-icon'] = $OUTPUT->image_url($is_glendon && ($current_language == 'fr' || $current_language == 'fr_ca') ? 'bigsvaiconfr' : 'bigsvaicon', 'theme');
-
-        // If not anon mode is disabled, you must have the sufficient data to form the payload
-        if (!$savy_data['anonymous']) {
-            try {
-                $can_render_savy = savy::can_render_savy();
-            } catch (Exception $e) {
-                $can_render_savy = false;
-            }
-
-            if (!$can_render_savy) {
-                return "";
-            }
+        if (!$callbacks) {
+            return '';
         }
 
-        // Render savy payload
-        try {
-            $output = $this->render_from_template('/need_savy', $savy_data);
-        } catch (Exception $e) {
-            $output = '';
+        $output = '';
+
+        foreach ($callbacks as $plugins) {
+            foreach ($plugins as $pluginfunction) {
+                if (function_exists($pluginfunction)) {
+                    $output .= $pluginfunction();
+                }
+            }
         }
 
         return $output;
-
-    }
-
-    public function render_dark_selector()
-    {
-
-        // Must be logged in
-        global $USER, $DB;
-        if (!($USER->id)) {
-            return "";
-        }
-
-        $dark_enabled = false;
-        if ($record = $DB->get_record('theme_moove', ['userid' => $USER->id], '*')) {
-            $dark_enabled = $record->dark_enabled;
-        }
-
-        $context = [
-            "graphic" => $dark_enabled ? "hollow_moon" : "filled_moon",
-            "darkEnabled" => $dark_enabled
-        ];
-
-        return $this->render_from_template("/dark_mode", $context);
-    }
-
-    public function navbar_plugin_output(): string
-    {
-        return (parent::navbar_plugin_output()) . $this->render_dark_selector();
-    }
-
-    public function get_blocked_themes()
-    {
-        global $COURSE, $DB;
-        $blockedThemes = '';
-        //We have to iterate through all categories because this could be a sub category
-        $category = $DB->get_record('course_categories', ['id' => $COURSE->category]);
-        if ($category) {
-            //Convert path into array, remove empty values and reverse
-            $categoryPath = array_reverse(array_filter(explode('/', $category->path)));
-            //Find themes that must be removed.
-            //First category to have plugins blocked overrides parent category
-            foreach ($categoryPath as $key => $categoryId) {
-                $params = ['categoryid' => $categoryId, 'plugintype' => 'theme'];
-
-                if ($blockedThemes = $DB->get_records('tool_catadmin_categoryplugin', $params)) {
-                    break;
-                }
-            }
-            //Get blocked themes
-            $themes = '';
-            if ($blockedThemes) {
-                foreach ($blockedThemes as $bt) {
-                    $themes .= trim($bt->pluginname) . ',';
-                }
-            }
-
-            return rtrim($themes, ',');
-        }
-    }
-
-    public function get_blocked_formats()
-    {
-        global $COURSE, $DB;
-        $blockedFormats = '';
-        //We have to iterate through all categories because this could be a sub category
-        $category = $DB->get_record('course_categories', ['id' => $COURSE->category]);
-        if ($category) {
-            //Convert path into array, remove empty values and reverse
-            $categoryPath = array_reverse(array_filter(explode('/', $category->path)));
-            //Find themes that must be removed.
-            //First category to have plugins blocked overrides parent category
-            foreach ($categoryPath as $key => $categoryId) {
-                $params = ['categoryid' => $categoryId, 'plugintype' => 'format'];
-
-                if ($blockedFormats = $DB->get_records('tool_catadmin_categoryplugin', $params)) {
-                    break;
-                }
-            }
-            //Get blocked themes
-            $formats = '';
-            if ($blockedFormats) {
-                foreach ($blockedFormats as $bf) {
-                    $formats .= trim(str_replace('format_', '', $bf->pluginname)) . ',';
-                }
-            }
-
-            return rtrim($formats, ',');
-        }
-    }
-
-    public function get_blocked_blocks()
-    {
-        global $COURSE, $DB;
-        $blockedBlocks = '';
-        //We have to iterate through all categories because this could be a sub category
-        $category = $DB->get_record('course_categories', ['id' => $COURSE->category]);
-        if ($category) {
-            //Convert path into array, remove empty values and reverse
-            $categoryPath = array_reverse(array_filter(explode('/', $category->path)));
-            //Find themes that must be removed.
-            //First category to have plugins blocked overrides parent category
-            foreach ($categoryPath as $key => $categoryId) {
-                $params = ['categoryid' => $categoryId, 'plugintype' => 'block'];
-
-                if ($blockedBlocks = $DB->get_records('tool_catadmin_categoryplugin', $params)) {
-                    break;
-                }
-            }
-            //Get blocked themes
-            $blocks = '';
-            if ($blockedBlocks) {
-                foreach ($blockedBlocks as $bb) {
-                    $blocks .= trim(str_replace('block_', '', $bb->pluginname)) . ',';
-                }
-            }
-
-            return rtrim($blocks, ',');
-        }
-    }
-
-    public function get_blocked_mods()
-    {
-        global $COURSE, $DB;
-        $blockedMods = '';
-        //We have to iterate through all categories because this could be a sub category
-        $category = $DB->get_record('course_categories', ['id' => $COURSE->category]);
-        if ($category) {
-            //Convert path into array, remove empty values and reverse
-            $categoryPath = array_reverse(array_filter(explode('/', $category->path)));
-            //Find themes that must be removed.
-            //First category to have plugins blocked overrides parent category
-            foreach ($categoryPath as $key => $categoryId) {
-                $params = ['categoryid' => $categoryId, 'plugintype' => 'mod'];
-
-                if ($blockedMods = $DB->get_records('tool_catadmin_categoryplugin', $params)) {
-                    break;
-                }
-            }
-            //Get blocked themes
-            $mods = '';
-            if ($blockedMods) {
-                foreach ($blockedMods as $bm) {
-                    $mods .= trim(str_replace('block_', '', $bm->pluginname)) . ',';
-                }
-            }
-
-            return rtrim($mods, ',');
-        }
-    }
-
-    public function get_blocked_atto()
-    {
-        global $COURSE, $DB;
-        $blockedAttos = '';
-        //We have to iterate through all categories because this could be a sub category
-        $category = $DB->get_record('course_categories', ['id' => $COURSE->category]);
-        if ($category) {
-            //Convert path into array, remove empty values and reverse
-            $categoryPath = array_reverse(array_filter(explode('/', $category->path)));
-            //Find themes that must be removed.
-            //First category to have plugins blocked overrides parent category
-            foreach ($categoryPath as $key => $categoryId) {
-                $params = ['categoryid' => $categoryId, 'plugintype' => 'atto'];
-
-                if ($blockedAttos = $DB->get_records('tool_catadmin_categoryplugin', $params)) {
-                    break;
-                }
-            }
-            //Get blocked themes
-            $plugins = '';
-            if ($blockedAttos) {
-                foreach ($blockedAttos as $bm) {
-                    $plugins .= trim(str_replace('atto', '', $bm->pluginname)) . ',';
-                }
-            }
-
-            return rtrim($plugins, ',');
-        }
-    }
-
-    public function is_staff()
-    {
-        global $USER;
-        if (substr($USER->idnumber, 0, 1) === '1' || substr($USER->idnumber, 0, 1) === '5') {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
-     * Is there a user tour on this page
+     * Redirects the user by any means possible given the current state
      *
-     * @return true|void
-     * @throws \dml_exception
+     * This function should not be called directly, it should always be called using
+     * the redirect function in lib/weblib.php
+     *
+     * The redirect function should really only be called before page output has started
+     * however it will allow itself to be called during the state STATE_IN_BODY
+     *
+     * @param string $encodedurl The URL to send to encoded if required
+     * @param string $message The message to display to the user if any
+     * @param int $delay The delay before redirecting a user, if $message has been
+     *         set this is a requirement and defaults to 3, set to 0 no delay
+     * @param boolean $debugdisableredirect this redirect has been disabled for
+     *         debugging purposes. Display a message that explains, and don't
+     *         trigger the redirect.
+     * @param string $messagetype The type of notification to show the message in.
+     *         See constants on \core\output\notification.
+     * @return string The HTML to display to the user before dying, may contain
+     *         meta refresh, javascript refresh, and may have set header redirects
      */
-    public function get_user_tours()
-    {
-        global $DB, $CFG;
+    public function redirect_message($encodedurl, $message, $delay, $debugdisableredirect,
+                                     $messagetype = \core\output\notification::NOTIFY_INFO) {
+        $url = str_replace('&amp;', '&', $encodedurl);
 
-        $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";;
-        if (strpos($url, '?') !== false) {
-            $url = strstr($url, '?', true);
+        switch ($this->page->state) {
+            case \moodle_page::STATE_BEFORE_HEADER :
+                // No output yet it is safe to delivery the full arsenal of redirect methods.
+                if (!$debugdisableredirect) {
+                    // Don't use exactly the same time here, it can cause problems when both redirects fire at the same time.
+                    $this->metarefreshtag = '<meta http-equiv="refresh" content="'. $delay .'; url='. $encodedurl .'" />'."\n";
+                    $this->page->requires->js_function_call('document.location.replace', [$url], false, ($delay + 3));
+                }
+                $output = $this->header();
+                break;
+            case \moodle_page::STATE_PRINTING_HEADER :
+                // We should hopefully never get here.
+                throw new \coding_exception('You cannot redirect while printing the page header');
+                break;
+            case \moodle_page::STATE_IN_BODY :
+                // We really shouldn't be here but we can deal with this.
+                debugging("You should really redirect before you start page output");
+                if (!$debugdisableredirect) {
+                    $this->page->requires->js_function_call('document.location.replace', [$url], false, $delay);
+                }
+                $output = $this->opencontainers->pop_all_but_last();
+                break;
+            case \moodle_page::STATE_DONE :
+                // Too late to be calling redirect now.
+                throw new \coding_exception('You cannot redirect after the entire page has been generated');
+                break;
         }
-        // get all enabled tours
-        $tours = $DB->get_records('tool_usertours_tours', ['enabled' => 1]);
 
-        foreach ($tours as $t) {
-            $tour = tourinstance::instance($t->id);
-            // Clean path match
-            $tour_pathmathch = str_replace('%', '', $tour->get_pathmatch());
-            // Set path name based on pathmatch
-            switch ($tour_pathmathch) {
-                case 'FRONTPAGE':
-                    $path_name = '/';
-                    break;
-                case 'FRONTPAGE_MY':
-                    $path_name = '/my/';
-                    break;
-                default:
-                    $path_name = $tour_pathmathch;
-            }
+        $output .= $this->notification($message, $messagetype);
 
-            // Check to see if url equal path name
-            // If it does return true
-            if ($CFG->wwwroot . $path_name == $url) {
-                return true;
-            }
+        $output .= $this->render_from_template('theme_moove/loading-overlay', ['encodedurl' => $encodedurl]);
+
+        if ($debugdisableredirect) {
+            $output .= '<p><strong>'.get_string('erroroutput', 'error').'</strong></p>';
         }
-        return false;
 
+        $output .= $this->footer();
+
+        return $output;
     }
 
     /**
-     * Is user editing?
-     * @return bool
+     * Renders the "breadcrumb" for all pages in boost.
+     *
+     * @return string the HTML for the navbar.
      */
-    public function user_is_editing()
-    {
-        global $PAGE;
-        return $PAGE->user_is_editing();
+    public function navbar(): string {
+        $newnav = new \theme_moove\output\boostnavbar($this->page);
+        return $this->render_from_template('core/navbar', $newnav);
     }
-
 }

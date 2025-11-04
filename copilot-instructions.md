@@ -1,0 +1,6 @@
+- My local computer does not have PHP installed.
+- I am using a container with PHP 8.3 with a volume mapped to my local computer.
+- Always run tests within the container.
+- All code must be updated for Moodle 5.1
+- The stubs folder contains version 4.1 of the moove theme code
+- Always use Mustache templating as a first step instead of the html_writer class.

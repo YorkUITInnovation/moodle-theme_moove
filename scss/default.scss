@@ -1,6 +1,6 @@
-// Import all scss moove files.
-@import "moove/modes/default";
 @import "moove/transitions";
+@import "moove/variables";
+@import "../../boost/scss/preset/default";
 @import "moove/general";
 @import "moove/pages";
 @import "moove/blocks";
@@ -17,5 +17,3 @@
 @import "moove/frontpage";
 @import "moove/profile";
 @import "moove/enrol";
-@import "moove/activityicons";
-@import "moove/atto";
