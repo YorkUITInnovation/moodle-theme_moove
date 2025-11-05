@@ -201,15 +201,29 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         {{# output.has_popover_links }}
             <div class="footer-section p-3 border-bottom">
-                {{# output.page_doc_link }}
+                <a href="https://lthelp.yorku.ca/moodle"
+                   class="btn btn-york-red w-100"
+                   target="_blank"
+                   title="{{#str}}moodledocslink, core{{/str}}"
+                >
+                    {{#str}}moodledocslink, core{{/str}}
+                </a>
+                <!-- {{# output.page_doc_link }}
                     <div>{{{ output.page_doc_link }}}</div>
                 {{/ output.page_doc_link }}
 
-                {{# output.services_support_link }}
+                    {{# output.services_support_link }}
                     <div>{{{ output.services_support_link }}}</div>
-                {{/ output.services_support_link }}
+                {{/ output.services_support_link }} -->
             </div>
         {{/ output.has_popover_links }}
+        {{#output.get_user_tours}}
+            <div class="footer-section p-3 border-bottom">
+                <a id="resetpagetour" class="btn btn-york-red w-100">
+                    {{#str}}reset_user_tour, theme_moove{{/str}}
+                </a>
+            </div>
+        {{/output.get_user_tours}}
         <div class="footer-section p-3">
             <div>{{#str}}poweredbymoodle, core{{/str}}</div>
             {{#output.moodle_release}}

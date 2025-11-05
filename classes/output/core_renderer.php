@@ -29,6 +29,7 @@ use core\context\course as context_course;
 use moodle_url;
 use html_writer;
 use theme_moove\output\core_course\activity_navigation;
+use tool_usertours\tour as tourinstance;
 
 /**
  * Renderers to align Moodle's HTML with that expected by Bootstrap
@@ -456,6 +457,49 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         return $output;
+    }
+
+    /**
+     * Is there a user tour on this page
+     *
+     * @return true|void
+     * @throws \dml_exception
+     */
+    public function get_user_tours()
+    {
+        global $DB, $CFG;
+
+        $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";;
+        if (strpos($url, '?') !== false) {
+            $url = strstr($url, '?', true);
+        }
+        // get all enabled tours
+        $tours = $DB->get_records('tool_usertours_tours', ['enabled' => 1]);
+
+        foreach ($tours as $t) {
+            $tour = tourinstance::instance($t->id);
+            // Clean path match
+            $tour_pathmathch = str_replace('%', '', $tour->get_pathmatch());
+            // Set path name based on pathmatch
+            switch ($tour_pathmathch) {
+                case 'FRONTPAGE':
+                    $path_name = '/';
+                    break;
+                case 'FRONTPAGE_MY':
+                    $path_name = '/my/';
+                    break;
+                default:
+                    $path_name = $tour_pathmathch;
+            }
+
+            // Check to see if url equal path name
+            // If it does return true
+            if ($CFG->wwwroot . $path_name == $url) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**

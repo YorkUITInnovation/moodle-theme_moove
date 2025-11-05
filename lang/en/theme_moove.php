@@ -202,3 +202,6 @@ $string['savy_json_encode_desc'] = 'Enable JSON encoding of the payload data';
 
 $string['redirectmessage'] = 'This page should automatically redirect.';
 $string['redirectbtntext'] = 'If nothing is happening please click here to continue.';
+
+// User tours
+$string['reset_user_tour'] = 'Restart help tour';
