@@ -66,6 +66,15 @@ if (!$courseindex) {
 
 $forceblockdraweropen = $OUTPUT->firstview_fakeblocks();
 
+// For early alert plugin - add link to primary navigation.
+if (get_capability_info('local/earlyalert:access_early_alert') &&
+    has_capability('local/earlyalert:access_early_alert', context_system::instance())) {
+    $PAGE->primarynav->add(
+        get_string('early_alert', 'local_earlyalert'),
+        new moodle_url("/local/earlyalert/tool_dashboard.php")
+    );
+}
+
 $secondarynavigation = false;
 $overflow = '';
 if ($PAGE->has_secondary_navigation()) {

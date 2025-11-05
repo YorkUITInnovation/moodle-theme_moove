@@ -84,6 +84,15 @@ $buildregionmainsettings = !$PAGE->include_region_main_settings_in_header_action
 // If the settings menu will be included in the header then don't add it here.
 $regionmainsettingsmenu = $buildregionmainsettings ? $OUTPUT->region_main_settings_menu() : false;
 
+// For early alert plugin - add link to primary navigation.
+if (get_capability_info('local/earlyalert:access_early_alert') &&
+    has_capability('local/earlyalert:access_early_alert', context_system::instance())) {
+    $PAGE->primarynav->add(
+        get_string('early_alert', 'local_earlyalert'),
+        new moodle_url("/local/earlyalert/tool_dashboard.php")
+    );
+}
+
 $header = $PAGE->activityheader;
 $headercontent = $header->export_for_template($renderer);
 
