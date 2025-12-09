@@ -106,7 +106,7 @@ if ($PAGE->pagelayout == 'mycourses' || $PAGE->pagelayout == 'mydashboard') {
 }
 
 $is_staff = false;
-if (substr($USER->idnumber,0,1) == 1) {
+if (isset($USER->idnumber) && substr($USER->idnumber,0,1) == 1) {
     $is_staff = true;
 }
 
