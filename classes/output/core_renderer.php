@@ -537,7 +537,11 @@ class core_renderer extends \theme_boost\output\core_renderer
 
         // Get the language
         $current_language = current_language();
-        $is_glendon = ($USER->profile['facultyaffiliaton'] === 'GL');
+        $is_glendon = (
+            isset($USER->profile) &&
+            is_array($USER->profile) &&
+            (($USER->profile['facultyaffiliaton'] ?? '') === 'GL')
+        );
         $savy_data['watson-button-icon'] = $OUTPUT->image_url($is_glendon && ($current_language == 'fr' || $current_language == 'fr_ca') ? 'bigsvaiconfr' : 'bigsvaicon', 'theme');
 
         // If not anon mode is disabled, you must have the sufficient data to form the payload
