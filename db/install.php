@@ -37,15 +37,19 @@ function xmldb_theme_moove_install() {
         foreach ($usertours as $usertour) {
             $configdata = json_decode($usertour->configdata);
 
-            if (in_array('boost', $configdata->filtervalues->theme)) {
+            // Check if the necessary properties exist and are arrays.
+            if (isset($configdata->filtervalues) &&
+                isset($configdata->filtervalues->theme) &&
+                is_array($configdata->filtervalues->theme) &&
+                in_array('boost', $configdata->filtervalues->theme)) {
                 $configdata->filtervalues->theme[] = 'moove';
+
+                $updatedata = new stdClass();
+                $updatedata->id = $usertour->id;
+                $updatedata->configdata = json_encode($configdata);
+
+                $DB->update_record('tool_usertours_tours', $updatedata);
             }
-
-            $updatedata = new stdClass();
-            $updatedata->id = $usertour->id;
-            $updatedata->configdata = json_encode($configdata);
-
-            $DB->update_record('tool_usertours_tours', $updatedata);
         }
     }
 
